@@ -1,5 +1,5 @@
-from flask import Flask, request
-# from flask_mysqldb import MySQL
+from os import abort
+from flask import Flask, request, abort
 app = Flask(__name__)
 
 
@@ -7,16 +7,21 @@ app = Flask(__name__)
 def index():
     if request.method == "POST":
         details = request.form
-        print(details['payload'])
-        qry=details['payload']
+        print(details['input'])
+        qry=details['input']
         if any(item in qry.split() for item in ["'" ,'*' , "-- (--%20)", ';' , '/*' , '(' ,')' , '--' ]):
-            return 'unsanitized'
+            print(qry.split())
+            return {"Code":200, "Message":"unsanitized"},200
         else:
-            return'sanitized'
+            return {"Code":404,"Message":"sanitized"},200
+    else:
+        return{"Code":404,"Message":"Not Post Method"},404
+
+
+
 
         # return 'success'
-    # return render_template('index.html')
-
+    
 
 if __name__ == '__main__':
     app.run()
